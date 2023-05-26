@@ -1,0 +1,11 @@
+prefix=/home/admin/build/ffmpeg/android-debug
+exec_prefix=${prefix}
+libdir=/home/admin/build/ffmpeg/android-debug/lib/x86_64
+includedir=${prefix}/include
+
+Name: x264
+Description: H.264 (MPEG4 AVC) encoder library
+Version: 0.164.x
+Libs: -L/home/admin/build/ffmpeg/android-debug/lib/x86_64 -lx264 -lm
+Libs.private: 
+Cflags: -I${prefix}/include 

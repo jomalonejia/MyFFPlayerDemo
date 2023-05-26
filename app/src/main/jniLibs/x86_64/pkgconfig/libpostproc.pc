@@ -1,0 +1,14 @@
+prefix=/home/admin/build/ffmpeg/android-debug
+exec_prefix=${prefix}
+libdir=/home/admin/build/ffmpeg/android-debug/lib/x86_64
+includedir=/home/admin/build/ffmpeg/android-debug/include
+
+Name: libpostproc
+Description: FFmpeg postprocessing library
+Version: 57.1.100
+Requires: 
+Requires.private: libavutil >= 58.2.100
+Conflicts:
+Libs: -L${libdir}  -lpostproc 
+Libs.private: -lm -latomic
+Cflags: -I${includedir}

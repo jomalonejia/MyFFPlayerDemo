@@ -1,0 +1,14 @@
+prefix=/home/admin/build/ffmpeg/android-debug
+exec_prefix=${prefix}
+libdir=/home/admin/build/ffmpeg/android-debug/lib/x86_64
+includedir=/home/admin/build/ffmpeg/android-debug/include
+
+Name: libavformat
+Description: FFmpeg container format library
+Version: 60.3.100
+Requires: 
+Requires.private: libavcodec >= 60.3.100, libswresample >= 4.10.100, libavutil >= 58.2.100
+Conflicts:
+Libs: -L${libdir}  -lavformat 
+Libs.private: -lm -latomic -lz
+Cflags: -I${includedir}

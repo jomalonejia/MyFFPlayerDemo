@@ -1,0 +1,14 @@
+prefix=/home/admin/build/ffmpeg/android-debug
+exec_prefix=${prefix}
+libdir=/home/admin/build/ffmpeg/android-debug/lib/x86_64
+includedir=/home/admin/build/ffmpeg/android-debug/include
+
+Name: libavutil
+Description: FFmpeg utility library
+Version: 58.2.100
+Requires: 
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lavutil 
+Libs.private: -pthread -lm -latomic
+Cflags: -I${includedir}

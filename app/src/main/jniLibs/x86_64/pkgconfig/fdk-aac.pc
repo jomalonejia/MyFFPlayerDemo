@@ -1,0 +1,11 @@
+prefix=/home/admin/build/ffmpeg/android-debug
+exec_prefix=${prefix}
+libdir=/home/admin/build/ffmpeg/android-debug/lib/x86_64
+includedir=/home/admin/build/ffmpeg/android-debug/includes
+
+Name: Fraunhofer FDK AAC Codec Library
+Description: AAC codec library
+Version: 2.0.2
+Libs: -L${libdir} -lfdk-aac -lm 
+Libs.private: 
+Cflags: -I${includedir}
