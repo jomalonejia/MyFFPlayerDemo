@@ -7,8 +7,8 @@
 
 #include <jni.h>
 
+#include "Player.h"
 #include "MediaPlayer.h"
-#include "NativePlayer.h"
 
 class PlayerWrapper {
 public:
@@ -26,7 +26,7 @@ public:
     void stop();
 
 private:
-    MediaPlayer *mediaPlayer;
+    Player *mediaPlayer;
 };
 
 #endif //MYFFPLAYERDEMO_PLAYERWRAPPER_H

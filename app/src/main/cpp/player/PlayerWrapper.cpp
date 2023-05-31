@@ -10,7 +10,7 @@ PlayerWrapper::~PlayerWrapper() {
 
 void PlayerWrapper::init(JNIEnv *env, jobject thiz,
                          jobject surface, const char *url) {
-    mediaPlayer = new NativePlayer();
+    mediaPlayer = new MediaPlayer();
     mediaPlayer->init(env, thiz, surface, url);
 }
 
@@ -23,5 +23,5 @@ void PlayerWrapper::play() {
 }
 
 void PlayerWrapper::stop() {
-
+    mediaPlayer->stop();
 }

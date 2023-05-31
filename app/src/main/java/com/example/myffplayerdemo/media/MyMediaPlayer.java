@@ -4,18 +4,18 @@ import android.view.Surface;
 
 public class MyMediaPlayer {
 
-    private long nativePlayerHandle = 0;
+    private long mediaPlayerHandle = 0;
 
     public void init(Surface surface, String url) {
-        nativePlayerHandle = native_init(surface, url);
+        mediaPlayerHandle = native_init(surface, url);
     }
 
     public void play(){
-        native_play(nativePlayerHandle);
+        native_play(mediaPlayerHandle);
     }
 
     public void uninit(){
-        native_uninit(nativePlayerHandle);
+        native_uninit(mediaPlayerHandle);
     }
 
     public native long native_init(Surface surface, String url);

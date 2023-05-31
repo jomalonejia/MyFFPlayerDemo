@@ -27,8 +27,6 @@ public:
 
     virtual void stop();
 
-    virtual void setVideoRender(VideoRender *render) = 0;
-
 protected:
     virtual void init(const char *url, AVMediaType mediaType);
 

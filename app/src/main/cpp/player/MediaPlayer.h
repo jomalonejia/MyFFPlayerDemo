@@ -1,44 +1,36 @@
 //
-// Created by admin on 2023/5/23.
+// Created by admin on 2023/5/22.
 //
 
-#ifndef MYFFPLAYERDEMO_MEDIAPLAYER_H
-#define MYFFPLAYERDEMO_MEDIAPLAYER_H
+#ifndef MYFFPLAYERDEMO_NativePlayerPLAYER_H
+#define MYFFPLAYERDEMO_NativePlayerPLAYER_H
 
-#include "include.h"
-#include "Decoder.h"
-#include "VideoRender.h"
+#include "Player.h"
 
-class MediaPlayer{
+class MediaPlayer : public Player {
 public:
-    MediaPlayer (){};
+    MediaPlayer() {};
 
-    virtual ~MediaPlayer(){};
+    ~MediaPlayer() {};
 
-    virtual void init(JNIEnv *env, jobject thiz,
-              jobject surface,const  char *url) = 0;
+    void init(JNIEnv *env, jobject thiz,
+              jobject surface,const  char *url) override;
 
-    virtual void unInit() = 0;
+    void unInit() override;
 
-    virtual void play() = 0;
+    void play() override;
 
-    virtual void stop() = 0;
+    void stop() override;
 
-    virtual JNIEnv *getJNIEnv(bool *isAttach) = 0;
-    virtual jobject getJavaObj() = 0;
-    virtual JavaVM *getJavaVM() = 0;
+private:
 
-    JavaVM *g_javaVM;
+    JNIEnv *getJNIEnv(bool *isAttach) override;
 
-    jobject g_jobject;
+    jobject getJavaObj() override;
 
-//private:
-
-    Decoder *m_video_decoder = nullptr;
-    Decoder *m_audio_decoder = nullptr;
-
-    VideoRender *m_video_render = nullptr;
+    JavaVM *getJavaVM() override;
 
 };
 
-#endif //MYFFPLAYERDEMO_MEDIAPLAYER_H
+
+#endif //MYFFPLAYERDEMO_NativePlayerPLAYER_H

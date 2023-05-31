@@ -2,12 +2,14 @@
 // Created by admin on 2023/5/22.
 //
 
-#include "NativePlayer.h"
+#include "MediaPlayer.h"
 #include "NativeRender.h"
 #include "VideoDecoder.h"
+#include "AudioDecoder.h"
+#include "OpenSLRender.h"
 
-void NativePlayer::init(JNIEnv *env, jobject thiz,
-                        jobject surface, const char *url) {
+void MediaPlayer::init(JNIEnv *env, jobject thiz,
+                       jobject surface, const char *url) {
     env->GetJavaVM(&g_javaVM);
     g_jobject = env->NewGlobalRef(thiz);
 
@@ -15,11 +17,14 @@ void NativePlayer::init(JNIEnv *env, jobject thiz,
     m_video_render = new NativeRender(env, surface);
     m_video_decoder->setVideoRender(m_video_render);
 
+    m_audio_decoder = new AudioDecoder(url);
+    m_audio_render = new OpenSLRender();
+    m_audio_decoder->setAudioRender(m_audio_render);
 }
 
 
 
-void NativePlayer::unInit() {
+void MediaPlayer::unInit() {
     if(m_video_decoder){
         delete m_video_decoder;
         m_video_decoder = nullptr;
@@ -31,15 +36,17 @@ void NativePlayer::unInit() {
     }
 }
 
-void NativePlayer::play() {
+void MediaPlayer::play() {
     m_video_decoder->start();
+    m_audio_decoder->start();
 }
 
-void NativePlayer::stop() {
-
+void MediaPlayer::stop() {
+    m_video_decoder->stop();
+    m_audio_decoder->stop();
 }
 
-JNIEnv *NativePlayer::getJNIEnv(bool *isAttach) {
+JNIEnv *MediaPlayer::getJNIEnv(bool *isAttach) {
     JNIEnv *env;
     int status;
     if (!g_javaVM) {
@@ -59,11 +66,11 @@ JNIEnv *NativePlayer::getJNIEnv(bool *isAttach) {
     return env;
 }
 
-jobject NativePlayer::getJavaObj() {
+jobject MediaPlayer::getJavaObj() {
     return g_jobject;
 }
 
-JavaVM *NativePlayer::getJavaVM(){
+JavaVM *MediaPlayer::getJavaVM(){
     return g_javaVM;
 }
 

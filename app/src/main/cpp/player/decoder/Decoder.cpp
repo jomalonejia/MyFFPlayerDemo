@@ -5,14 +5,14 @@
 #include "Decoder.h"
 
 /*void Decoder::test(JNIEnv *env, jobject surface){
-    const char *videoPath = "/storage/emulated/0/Movies/juren-30s.mp4";
+    const char *avPath = "/storage/emulated/0/Movies/juren-30s.mp4";
 
     AVFormatContext *formatContext = avformat_alloc_context();
 
-    // open video file
-    LOGI("Open video file");
-    if (avformat_open_input(&formatContext, videoPath, NULL, NULL) != 0) {
-        LOGE("Cannot open video file: %s\n", videoPath);
+    // open av file
+    LOGI("Open av file");
+    if (avformat_open_input(&formatContext, avPath, NULL, NULL) != 0) {
+        LOGE("Cannot open av file: %s\n", avPath);
         return;
     }
 
@@ -23,26 +23,26 @@
         return;
     }
 
-    // Find the first video stream
-    LOGI("Find video stream");
-    int video_stream_index = -1;
+    // Find the first av stream
+    LOGI("Find av stream");
+    int av_stream_index = -1;
     for (int i = 0; i < formatContext->nb_streams; i++) {
-        if (formatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
-            video_stream_index = i;
+        if (formatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_av) {
+            av_stream_index = i;
         }
     }
 
-    if (video_stream_index == -1) {
-        LOGE("No video stream found.");
-        return; // no video stream found.
+    if (av_stream_index == -1) {
+        LOGE("No av stream found.");
+        return; // no av stream found.
     }
 
-    // Get a pointer to the codec context for the video stream
-    LOGI("Get a pointer to the codec context for the video stream");
-    AVCodecParameters *codecParameters = formatContext->streams[video_stream_index]->codecpar;
+    // Get a pointer to the codec context for the av stream
+    LOGI("Get a pointer to the codec context for the av stream");
+    AVCodecParameters *codecParameters = formatContext->streams[av_stream_index]->codecpar;
 
-    // Find the decoder for the video stream
-    LOGI("Find the decoder for the video stream");
+    // Find the decoder for the av stream
+    LOGI("Find the decoder for the av stream");
     const AVCodec *codec = avcodec_find_decoder(codecParameters->codec_id);
     if (codec == NULL) {
         LOGE("Codec not found.");
@@ -78,15 +78,15 @@
         return;
     }
 
-    // Allocate video frame
-    LOGI("Allocate video frame");
+    // Allocate av frame
+    LOGI("Allocate av frame");
     AVFrame *frame = av_frame_alloc();
     // Allocate render frame
     LOGI("Allocate render frame");
     AVFrame *renderFrame = av_frame_alloc();
 
     if (frame == NULL || renderFrame == NULL) {
-        LOGD("Could not allocate video frame.");
+        LOGD("Could not allocate av frame.");
         return;
     }
 
@@ -119,22 +119,22 @@
     ANativeWindow *nativeWindow = ANativeWindow_fromSurface(env, surface);
     ANativeWindow_Buffer windowBuffer;
 
-    // get video width , height
-    LOGI("get video width , height");
-    int videoWidth = codecContext->width;
-    int videoHeight = codecContext->height;
-    LOGI("VideoSize: [%d,%d]", videoWidth, videoHeight);
+    // get av width , height
+    LOGI("get av width , height");
+    int avWidth = codecContext->width;
+    int avHeight = codecContext->height;
+    LOGI("avSize: [%d,%d]", avWidth, avHeight);
 
     // 设置native window的buffer大小,可自动拉伸
     LOGI("set native window");
-    ANativeWindow_setBuffersGeometry(nativeWindow, videoWidth, videoHeight,
+    ANativeWindow_setBuffersGeometry(nativeWindow, avWidth, avHeight,
                                      WINDOW_FORMAT_RGBA_8888);
 
 
     LOGI("read frame");
     while (av_read_frame(formatContext, packet) == 0) {
-        // Is this a packet from the video stream?
-        if (packet->stream_index == video_stream_index) {
+        // Is this a packet from the av stream?
+        if (packet->stream_index == av_stream_index) {
 
             // Send origin data to decoder
             int sendPacketState = avcodec_send_packet(codecContext, packet);
@@ -159,7 +159,7 @@
                     int srcStride = renderFrame->linesize[0];
 
                     // 由于window的stride和帧的stride不同,因此需要逐行复制
-                    for (int i = 0; i < videoHeight; i++) {
+                    for (int i = 0; i < avHeight; i++) {
                         memcpy(dst + i * dstStride, src + i * srcStride, srcStride);
                     }
 
@@ -241,10 +241,10 @@ int Decoder::initFFDecoder() {
     int ret = -1;
     m_fmt_ctx = avformat_alloc_context();
 
-    // open video file
-    LOGI("Open video file");
+    // open av file
+    LOGI("Open av file");
     if ((ret = avformat_open_input(&m_fmt_ctx, m_url, NULL, NULL)) != 0) {
-        LOGE("Cannot open video file: %s\n", m_url);
+        LOGE("Cannot open av file: %s\n", m_url);
         return ret;
     }
 
@@ -255,8 +255,8 @@ int Decoder::initFFDecoder() {
         return ret;
     }
 
-    // Find the first video stream
-    LOGI("Find video stream");
+    // Find the first av stream
+    LOGI("Find av stream");
 
     /*for (int i = 0; i < m_fmt_ctx->nb_streams; i++) {
         if (m_fmt_ctx->streams[i]->codecpar->codec_type == m_mediaType) {
@@ -268,15 +268,15 @@ int Decoder::initFFDecoder() {
 
     if (m_stream_index == -1) {
         LOGE("No stream index found.");
-        return -1; // no video stream found.
+        return -1; // no av stream found.
     }
 
-    // Get a pointer to the codec context for the video stream
-    LOGI("Get a pointer to the codec context for the video stream");
+    // Get a pointer to the codec context for the av stream
+    LOGI("Get a pointer to the codec context for the av stream");
     AVCodecParameters *codecParameters = m_fmt_ctx->streams[m_stream_index]->codecpar;
 
-    // Find the decoder for the video stream
-    LOGI("Find the decoder for the video stream");
+    // Find the decoder for the av stream
+    LOGI("Find the decoder for the av stream");
     m_codec = avcodec_find_decoder(codecParameters->codec_id);
     if (!m_codec) {
         LOGE("Codec not found.");
@@ -312,8 +312,8 @@ int Decoder::initFFDecoder() {
         return -1;
     }
 
-    // Allocate video frame
-    LOGI("Allocate video frame");
+    // Allocate av frame
+    LOGI("Allocate av frame");
     m_frame = av_frame_alloc();
     if (!m_frame) {
         LOGD("Could not allocate av frame.");
@@ -364,7 +364,7 @@ void Decoder::decoderLoop() {
         while (STATE_PAUSE == m_decoder_state) {
             LOGE("DecoderBase::DecodingLoop waiting, m_MediaType=%d", m_mediaType);
             std::unique_lock<std::mutex> lock(m_mutex);
-            m_cv.wait_for(lock, std::chrono::seconds(10));
+            m_cv.wait_for(lock, std::chrono::seconds(5));
         }
 
 
@@ -380,10 +380,17 @@ void Decoder::decoderLoop() {
 
 int Decoder::decodeOnePacket() {
     int ret = av_read_frame(m_fmt_ctx, m_pkt);
+    if(m_pkt->stream_index != m_stream_index){
+        av_packet_unref(m_pkt);
+        if(ret < 0){
+            LOGE("DecoderBase::av_read_frame stream index%s", jj_err_str(ret));
+        }
+        return 0;
+    }
     if (ret == AVERROR_EOF) {
         avcodec_send_packet(m_codec_ctx, nullptr);
     } else if (ret < 0) {
-        LOGE("DecoderBase::av_read_frame %d", ret);
+        LOGE("DecoderBase::av_read_frame %s", jj_err_str(ret));
         return ret;
     }else{
         avcodec_send_packet(m_codec_ctx, m_pkt);
@@ -397,7 +404,8 @@ int Decoder::decodeOnePacket() {
         } else if (ret == AVERROR(EAGAIN)) {
             break;
         } else if (ret < 0) {
-            LOGE("DecoderBase::avcodec_receive_frame %d", ret);
+            LOGE("DecoderBase::avcodec_receive_frame %s", jj_err_str(ret));
+            LOGE("codec:%d  frame:%d nb_samples:%d height:%d",m_codec_ctx->codec_id,m_frame->format,m_frame->nb_samples,m_frame->height);
             return ret;
         }
 
